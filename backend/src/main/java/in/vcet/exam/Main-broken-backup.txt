@@ -1,0 +1,237 @@
+
+        // SUBMIT EXAM API
+        server.createContext("/api/submit-exam", exchange -> {
+
+            if ("OPTIONS".equalsIgnoreCase(
+                    exchange.getRequestMethod())) {
+                send(exchange, 204, "");
+                return;
+            }
+
+            if (!"POST".equalsIgnoreCase(
+                    exchange.getRequestMethod())) {
+                send(exchange, 405, gson.toJson(
+                        Map.of("error", "Method not allowed")));
+                return;
+            }
+
+            try {
+                String body = new String(
+                        exchange.getRequestBody().readAllBytes(),
+                        StandardCharsets.UTF_8);
+
+                com.google.gson.JsonObject data =
+                        com.google.gson.JsonParser
+                                .parseString(body)
+                                .getAsJsonObject();
+
+                int studentId = data.get("studentId").getAsInt();
+                int examId = data.get("examId").getAsInt();
+
+                com.google.gson.JsonArray answers =
+                        data.getAsJsonArray("answers");
+
+                // Check that exactly five answers are submitted
+                if (answers == null || answers.size() != 5) {
+                    send(exchange, 400, gson.toJson(
+                            Map.of("error",
+                                    "Please submit all 5 answers.")));
+                    return;
+                }
+
+                try (Connection connection =
+                             Database.getConnection()) {
+
+                    connection.setAutoCommit(false);
+
+                    try {
+                        // Check student
+                        String studentSql =
+                                "SELECT student_id FROM students " +
+                                "WHERE student_id = ?";
+
+                        try (PreparedStatement ps =
+                                     connection.prepareStatement(studentSql)) {
+                            ps.setInt(1, studentId);
+
+                            try (ResultSet rs = ps.executeQuery()) {
+                                if (!rs.next()) {
+                                    throw new Exception(
+                                            "Student not found.");
+                                }
+                            }
+                        }
+
+                        // Get exam total marks
+                        int totalMarks;
+
+                        String examSql =
+                                "SELECT total_marks FROM exams " +
+                                "WHERE exam_id = ?";
+
+                        try (PreparedStatement ps =
+                                     connection.prepareStatement(examSql)) {
+                            ps.setInt(1, examId);
+
+                            try (ResultSet rs = ps.executeQuery()) {
+                                if (!rs.next()) {
+                                    throw new Exception(
+                                            "Exam not found.");
+                                }
+
+                                totalMarks = rs.getInt("total_marks");
+                            }
+                        }
+
+                        // Get all correct answers for this exam
+                        Map<Integer, String> correctAnswers =
+                                new LinkedHashMap<>();
+
+                        String questionSql =
+                                "SELECT question_id, correct_answer " +
+                                "FROM questions WHERE exam_id = ?";
+
+                        try (PreparedStatement ps =
+                                     connection.prepareStatement(questionSql)) {
+                            ps.setInt(1, examId);
+
+                            try (ResultSet rs = ps.executeQuery()) {
+                                while (rs.next()) {
+                                    correctAnswers.put(
+                                            rs.getInt("question_id"),
+                                            rs.getString("correct_answer")
+                                                    .trim().toUpperCase());
+                                }
+                            }
+                        }
+
+                        if (correctAnswers.isEmpty()) {
+                            throw new Exception(
+                                    "No questions available.");
+                        }
+
+                        int correctCount = 0;
+
+                        List<Integer> submittedIds =
+                                new ArrayList<>();
+
+                        // Insert student answers
+                        String answerSql =
+                                "INSERT INTO student_answers " +
+                                "(student_id, question_id, selected_answer, " +
+                                "is_correct) VALUES (?, ?, ?, ?)";
+
+                        try (PreparedStatement ps =
+                                     connection.prepareStatement(answerSql)) {
+
+                            for (com.google.gson.JsonElement element : answers) {
+
+                                com.google.gson.JsonObject answer =
+                                        element.getAsJsonObject();
+
+                                int questionId =
+                                        answer.get("questionId").getAsInt();
+
+                                String selectedAnswer =
+                                        answer.get("selectedAnswer")
+                                                .getAsString()
+                                                .trim().toUpperCase();
+
+                                // Validate selected option
+                                if (!List.of("A", "B", "C", "D")
+                                        .contains(selectedAnswer)) {
+                                    throw new Exception(
+                                            "Invalid selected answer.");
+                                }
+
+                                // Check question belongs to this exam
+                                if (!correctAnswers.containsKey(questionId)) {
+                                    throw new Exception(
+                                            "Invalid question ID.");
+                                }
+
+                                // Prevent duplicate question answers
+                                if (submittedIds.contains(questionId)) {
+                                    throw new Exception(
+                                            "Duplicate question submitted.");
+                                }
+
+                                submittedIds.add(questionId);
+
+                                boolean isCorrect =
+                                        selectedAnswer.equals(
+                                                correctAnswers.get(questionId));
+
+                                if (isCorrect) {
+                                    correctCount++;
+                                }
+
+                                ps.setInt(1, studentId);
+                                ps.setInt(2, questionId);
+                                ps.setString(3, selectedAnswer);
+                                ps.setBoolean(4, isCorrect);
+
+                                ps.addBatch();
+                            }
+
+                            ps.executeBatch();
+                        }
+
+                        // Calculate marks for five questions
+                        int marksPerQuestion = totalMarks / 5;
+                        int marksObtained =
+                                correctCount * marksPerQuestion;
+
+                        // Save examination result
+                        String resultSql =
+                                "INSERT INTO results " +
+                                "(student_id, exam_id, marks_obtained, " +
+                                "status, exam_taken_at) " +
+                                "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP) " +
+                                "RETURNING result_id";
+
+                        int resultId;
+
+                        try (PreparedStatement ps =
+                                     connection.prepareStatement(resultSql)) {
+
+                            ps.setInt(1, studentId);
+                            ps.setInt(2, examId);
+                            ps.setInt(3, marksObtained);
+                            ps.setString(4, "Completed");
+
+                            try (ResultSet rs = ps.executeQuery()) {
+                                rs.next();
+                                resultId = rs.getInt("result_id");
+                            }
+                        }
+
+                        // Save all changes
+                        connection.commit();
+
+                        send(exchange, 201, gson.toJson(Map.of(
+                                "message",
+                                "Exam submitted successfully",
+                                "resultId", resultId,
+                                "studentId", studentId,
+                                "examId", examId,
+                                "totalQuestions", answers.size(),
+                                "correctAnswers", correctCount,
+                                "marksObtained", marksObtained,
+                                "totalMarks", totalMarks,
+                                "status", "Completed"
+                        )));
+
+                    } catch (Exception e) {
+                        connection.rollback();
+
+                        send(exchange, 400, gson.toJson(
+                                Map.of("error", e.getMessage())));
+                    }
+                }
+
+            } catch (Exception e) {
+                send(exchange, 400, gson.toJson(
+                        Map.of("error", e.getMessage())));
+            }
+        });

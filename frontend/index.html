@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCET | Online Examination & Student Performance Analysis System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div>
+                <div class="brand-title">VCET Online Examination System</div>
+                <div class="brand-subtitle">Scenario 28 | Student Performance Analysis</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div id="statusBadge" class="status-badge connecting">
+                <span class="status-dot"></span>
+                <span id="apiStatus">Connecting...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+        <!-- NAVIGATION TABS -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="examTab">📝 Take Examination</button>
+            <button class="tab-btn" data-tab="resultsTab">📊 Results & Performance</button>
+            <button class="tab-btn" data-tab="adminTab">⚙️ Admin / Manage Exams</button>
+            <button class="tab-btn" data-tab="studentsTab">👥 Student Registration</button>
+        </nav>
+
+        <!-- ============================================================== -->
+        <!-- TAB 1: TAKE EXAMINATION                                        -->
+        <!-- ============================================================== -->
+        <section id="examTab" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Student Examination Portal</h2>
+                    <p>Select your student profile and the examination to begin.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentSelect">Select Student</label>
+                        <select id="studentSelect">
+                            <option value="">-- Choose Student --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examSelect">Select Examination</label>
+                        <select id="examSelect">
+                            <option value="">-- Choose Examination --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="loadQuestionsBtn" class="btn btn-primary">🚀 Load Questions & Start Exam</button>
+                </div>
+            </div>
+
+            <!-- EXAM QUESTION AREA -->
+            <div id="examContainer" class="card exam-card" style="display: none;">
+                <div class="exam-header">
+                    <div>
+                        <h3 id="activeExamTitle">Examination</h3>
+                        <p id="activeExamSubtitle">Subject: - | Total Marks: 100</p>
+                    </div>
+                    <div class="progress-box">
+                        <span id="progressText">0 of 0 answered</span>
+                        <div class="progress-bar">
+                            <div id="progressBarFill" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="examForm" class="questions-list"></form>
+
+                <div class="exam-footer">
+                    <button id="submitExamBtn" class="btn btn-success" disabled>Submit Examination</button>
+                </div>
+            </div>
+
+            <!-- RESULT CARD -->
+            <div id="resultBox" style="display: none;"></div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TAB 2: RESULTS & PERFORMANCE                                   -->
+        <!-- ============================================================== -->
+        <section id="resultsTab" class="tab-content">
+            <div class="card">
+                <div class="card-header flex-between">
+                    <div>
+                        <h2>Student Examination Results</h2>
+                        <p>Real-time evaluated scores and performance tracking.</p>
+                    </div>
+                    <button id="refreshResultsBtn" class="btn btn-outline btn-sm">🔄 Refresh Results</button>
+                </div>
+
+                <!-- METRICS SUMMARY -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Submissions</div>
+                        <div id="statTotal" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Average Score</div>
+                        <div id="statAvg" class="stat-value">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pass Rate</div>
+                        <div id="statPassRate" class="stat-value">0%</div>
+                    </div>
+                </div>
+
+                <!-- RESULTS TABLE -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Result ID</th>
+                                <th>Student</th>
+                                <th>Department</th>
+                                <th>Exam Name</th>
+                                <th>Subject</th>
+                                <th>Marks Obtained</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                                <th>Exam Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <tr><td colspan="9" class="text-center">Loading results...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TAB 3: ADMIN & EXAM MANAGEMENT                                 -->
+        <!-- ============================================================== -->
+        <section id="adminTab" class="tab-content">
+            <div class="grid-2col">
+                <!-- CREATE EXAM -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Create New Examination</h2>
+                        <p>Schedule a new examination for students.</p>
+                    </div>
+                    <form id="createExamForm">
+                        <div class="form-group">
+                            <label for="newExamName">Exam Name *</label>
+                            <input type="text" id="newExamName" placeholder="e.g. Data Structures Internal II" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newSubject">Subject *</label>
+                            <input type="text" id="newSubject" placeholder="e.g. Data Structures and Algorithms" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newTotalMarks">Total Marks *</label>
+                            <input type="number" id="newTotalMarks" value="100" min="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newExamDate">Exam Date *</label>
+                            <input type="date" id="newExamDate" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">➕ Create Examination</button>
+                    </form>
+                </div>
+
+                <!-- ADD QUESTION -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Add Question to Exam</h2>
+                        <p>Add multiple choice questions with correct answer key.</p>
+                    </div>
+                    <form id="addQuestionForm">
+                        <div class="form-group">
+                            <label for="targetExamSelect">Select Exam *</label>
+                            <select id="targetExamSelect" required>
+                                <option value="">-- Choose Exam --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newQuestionText">Question Text *</label>
+                            <textarea id="newQuestionText" rows="2" placeholder="Enter question description..." required></textarea>
+                        </div>
+                        <div class="options-grid">
+                            <div class="form-group">
+                                <label for="newOptionA">Option A *</label>
+                                <input type="text" id="newOptionA" placeholder="Option A text" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOptionB">Option B *</label>
+                                <input type="text" id="newOptionB" placeholder="Option B text" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOptionC">Option C *</label>
+                                <input type="text" id="newOptionC" placeholder="Option C text" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOptionD">Option D *</label>
+                                <input type="text" id="newOptionD" placeholder="Option D text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newCorrectAnswer">Correct Option *</label>
+                            <select id="newCorrectAnswer" required>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">💾 Save Question</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TAB 4: STUDENT REGISTRATION                                    -->
+        <!-- ============================================================== -->
+        <section id="studentsTab" class="tab-content">
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Register New Student</h2>
+                        <p>Add student profile for examination eligibility.</p>
+                    </div>
+                    <form id="registerStudentForm">
+                        <div class="form-group">
+                            <label for="studentName">Full Name *</label>
+                            <input type="text" id="studentName" placeholder="e.g. Anitha R" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentEmail">Email Address *</label>
+                            <input type="email" id="studentEmail" placeholder="e.g. anitha@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentDept">Department *</label>
+                            <select id="studentDept" required>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                                <option value="Electronics and Communication">Electronics and Communication</option>
+                                <option value="Electrical and Electronics">Electrical and Electronics</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">👤 Register Student</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Registered Students Directory</h2>
+                        <p>List of all students currently in the database.</p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="4" class="text-center">Loading students...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p><strong>Department of Information Technology</strong> | Velammal College of Engineering and Technology</p>
+        <p class="footer-sub">Java Backend API &bull; PostgreSQL Database &bull; Python Data Analysis &bull; Scenario 28</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
