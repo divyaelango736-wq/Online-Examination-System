@@ -1,5 +1,6 @@
 
 import os
+
 from pathlib import Path
 from urllib.parse import urlparse
 import psycopg
@@ -73,7 +74,7 @@ def analyze_performance():
         print("Highest Percentage:", max(percentages), "%")
         print("Lowest Percentage:", min(percentages), "%")
 
-        passed = sum(1 for p in percentages if p >= 40)
+        passed = sum(1 for p in percentages if p >= 50)
         pass_percentage = (passed / len(percentages)) * 100
 
         print("Pass Count:", passed)

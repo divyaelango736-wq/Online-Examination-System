@@ -554,3 +554,45 @@ function loadStudentsTable() {
 checkHealth();
 loadInitialData();
 setInterval(checkHealth, 10000);
+// DOWNLOAD STUDENT RESULTS AS CSV
+async function downloadReport() {
+    const response = await fetch(`${API}/results`);
+    const results = extractList(await response.json());
+
+    const headers = [
+        "Student",
+        "Department",
+        "Exam Name",
+        "Subject",
+        "Marks",
+        "Percentage",
+        "Status"
+    ];
+
+    const rows = results.map(r => [
+        r.studentName,
+        r.department,
+        r.examName,
+        r.subject,
+        r.marksObtained,
+        r.percentage,
+        r.status
+    ]);
+
+    const csv = [headers, ...rows]
+        .map(row => row.join(","))
+        .join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Student_Performance_Report.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById("downloadReportBtn")
+    .addEventListener("click", downloadReport);

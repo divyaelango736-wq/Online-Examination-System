@@ -350,6 +350,56 @@ public class Main {
         });
 
         // ==========================================
+        // 4. STUDENT EXAM REGISTRATION API
+        // ==========================================
+        server.createContext("/api/registrations", exchange -> {
+            if (handleCors(exchange)) return;
+
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                send(exchange, 405,
+                        gson.toJson(Map.of("error", "Method not allowed")));
+                return;
+            }
+
+            try {
+                String body = new String(
+                        exchange.getRequestBody().readAllBytes(),
+                        StandardCharsets.UTF_8
+                );
+
+                JsonObject data = JsonParser.parseString(body).getAsJsonObject();
+
+                int studentId = data.get("studentId").getAsInt();
+                int examId = data.get("examId").getAsInt();
+
+                String sql = "INSERT INTO exam_registrations " +
+                        "(student_id, exam_id) VALUES (?, ?) " +
+                        "RETURNING registration_id";
+
+                try (Connection conn = Database.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                    ps.setInt(1, studentId);
+                    ps.setInt(2, examId);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+
+                        send(exchange, 201, gson.toJson(Map.of(
+                                "message", "Student registered successfully",
+                                "registrationId", rs.getInt("registration_id"),
+                                "studentId", studentId,
+                                "examId", examId
+                        )));
+                    }
+                }
+
+            } catch (Exception e) {
+                send(exchange, 400,
+                        gson.toJson(Map.of("error", e.getMessage())));
+            }
+        });
+        // ==========================================
         // 5. SUBMIT EXAM API
         // ==========================================
         server.createContext("/api/submit-exam", exchange -> {
