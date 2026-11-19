@@ -320,7 +320,101 @@ submitExamBtn.addEventListener("click", async (e) => {
     }
 });
 
+// PERFORMANCE CHARTS
+let studentMarksChart = null;
+let passFailChart = null;
+let averageChart = null;
 
+function updatePerformanceCharts(results) {
+
+    // 1. Student-wise Marks Graph
+    const studentLabels = results.map(r =>
+        `${r.studentName} - ${r.examName}`
+    );
+
+    const marks = results.map(r =>
+        Number(r.marksObtained)
+    );
+
+    if (studentMarksChart) studentMarksChart.destroy();
+
+    studentMarksChart = new Chart(
+        document.getElementById("studentMarksChart"),
+        {
+            type: "bar",
+            data: {
+                labels: studentLabels,
+                datasets: [{
+                    label: "Marks Obtained",
+                    data: marks
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        }
+    );
+
+    // 2. Pass vs Fail Graph
+    const passed = results.filter(r =>
+        Number(r.percentage) >= 40
+    ).length;
+
+    const failed = results.length - passed;
+
+    if (passFailChart) passFailChart.destroy();
+
+    passFailChart = new Chart(
+        document.getElementById("passFailChart"),
+        {
+            type: "doughnut",
+            data: {
+                labels: ["Passed", "Failed"],
+                datasets: [{
+                    data: [passed, failed]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        }
+    );
+
+    // 3. Average Performance Graph
+    const average = results.length
+        ? results.reduce((sum, r) =>
+            sum + Number(r.percentage), 0
+          ) / results.length
+        : 0;
+
+    if (averageChart) averageChart.destroy();
+
+    averageChart = new Chart(
+        document.getElementById("averageChart"),
+        {
+            type: "bar",
+            data: {
+                labels: ["Average Percentage"],
+                datasets: [{
+                    label: "Average Performance",
+                    data: [average]
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        }
+    );
+}
 // 5. LOAD RESULTS & PERFORMANCE
 async function loadResults() {
     resultsTableBody.innerHTML =
@@ -335,7 +429,7 @@ async function loadResults() {
         }
 
         const results = extractList(await javaResponse.json());
-
+        updatePerformanceCharts(results);
         // Get performance analysis from Python
         let pythonData = null;
 
