@@ -1,68 +1,56 @@
-﻿# \# SOFTWARE TESTING DOCUMENT
+﻿\# SOFTWARE TESTING DOCUMENT
 
-#
 
-# \*\*Project:\*\* Online Examination System
+**Project:** Online Examination System
 
-#
 
-# \## 1. Introduction
+## 1. Introduction
 
-#
 
-# This document describes the testing activities carried out for the Online Examination System. The purpose of testing is to check whether the application modules work as expected and satisfy the project requirements.
+This document describes the testing activities carried out for the Online Examination System. The purpose of testing is to check whether the application modules work as expected and satisfy the project requirements.
 
-#
 
-# \## 2. Objectives of Testing
+## 2. Objectives of Testing
 
-#
 
-# \- Verify student registration and student information retrieval.
+- Verify student registration and student information retrieval.
 
-# \- Check exam listing and question loading.
+- Check exam listing and question loading.
 
-# \- Verify examination submission and marks calculation.
+- Verify examination submission and marks calculation.
 
-# \- Check result retrieval.
+- Check result retrieval.
 
-# \- Verify Python-based performance analysis.
+- Verify Python-based performance analysis.
 
-# \- Identify errors and improve application reliability.
+- Identify errors and improve application reliability.
 
-#
 
-# \## 3. Types of Testing
+## 3. Types of Testing
 
-#
 
-# \### 3.1 Unit Testing
+### 3.1 Unit Testing
 
-# Individual modules such as student registration, exam creation and result calculation are checked independently.
+Individual modules such as student registration, exam creation and result calculation are checked independently.
 
-#
 
-# \### 3.2 Integration Testing
+### 3.2 Integration Testing
 
-# The interaction between the Java backend, PostgreSQL database and Python analysis module is checked.
+The interaction between the Java backend, PostgreSQL database and Python analysis module is checked.
 
-#
 
-# \### 3.3 System Testing
+### 3.3 System Testing
 
-# The complete application is checked to ensure that its major modules work together.
+The complete application is checked to ensure that its major modules work together.
 
-#
 
-# \### 3.4 Validation Testing
+### 3.4 Validation Testing
 
-# The application functionality is reviewed against the expected project requirements.
+The application functionality is reviewed against the expected project requirements.
 
-#
 
-# \## 4. Test Cases and Results
+## 4. Test Cases and Results
 
-#
 
 | Test ID | Test Name | Module | Expected Result | Actual Result | Status |
 |---|---|---|---|---|---|
@@ -75,15 +63,12 @@
 | TC07 | Performance Analysis | Python | Performance report generated | Python performance analysis executed successfully | PASS |
 ## 5. Detailed API Testing
 
-#
 
-# The Java backend APIs were tested using PowerShell.
+The Java backend APIs were tested using PowerShell.
 
-#
 
-# \### 5.1 GET API Testing
+### 5.1 GET API Testing
 
-#
 
 | API Endpoint | Expected HTTP Status | Actual HTTP Status | Result |
 
@@ -99,183 +84,160 @@
 
 | `/api/results` | 200 | 200 | PASS |
 
-#
 
-# \### 5.2 Student Registration API
+### 5.2 Student Registration API
 
-#
 
-# \*\*Method:\*\* POST
+**Method:** POST
 
-# \*\*Endpoint:\*\* `/api/registrations`
+**Endpoint:** `/api/registrations`
 
-#
 
-# \*\*Input:\*\*
+**Input:**
 
-# ```json
+```json
 
-# {
+{
 
-# &#x20; "studentId": 7,
+&#x20; "studentId": 7,
 
-# &#x20; "examId": 4
+&#x20; "examId": 4
 
-# }
+}
 
-# ```
+```
 
-#
 
-# \*\*Expected Output:\*\* Student registered successfully.
+**Expected Output:** Student registered successfully.
 
-#
 
-# \*\*Actual Output:\*\* Student registered successfully. Registration ID: 3.
+**Actual Output:** Student registered successfully. Registration ID: 3.
 
-#
 
-# \*\*HTTP Status:\*\* 201 Created (as defined by the backend success response).
+**HTTP Status:** 201 Created (as defined by the backend success response).
 
-#
 
-# \*\*Result:\*\* PASS
+**Result:** PASS
 
-#
 
-# \### 5.3 Submit Examination API
+### 5.3 Submit Examination API
 
-#
 
-# \*\*Method:\*\* POST
+**Method:** POST
 
-# \*\*Endpoint:\*\* `/api/submit-exam`
+**Endpoint:** `/api/submit-exam`
 
-#
 
-# \*\*Input:\*\*
+**Input:**
 
-# ```json
+```json
 
-# {
+{
 
-# &#x20; "studentId": 7,
+&#x20; "studentId": 7,
 
-# &#x20; "examId": 1,
+&#x20; "examId": 1,
 
-# &#x20; "answers": \[
+&#x20; "answers": [
 
-# &#x20;   {
+&#x20;   {
 
-# &#x20;     "questionId": 5,
+&#x20;     "questionId": 5,
 
-# &#x20;     "selectedAnswer": "B"
+&#x20;     "selectedAnswer": "B"
 
-# &#x20;   },
+&#x20;   },
 
-# &#x20;   {
+&#x20;   {
 
-# &#x20;     "questionId": 6,
+&#x20;     "questionId": 6,
 
-# &#x20;     "selectedAnswer": "C"
+&#x20;     "selectedAnswer": "C"
 
-# &#x20;   },
+&#x20;   },
 
-# &#x20;   {
+&#x20;   {
 
-# &#x20;     "questionId": 7,
+&#x20;     "questionId": 7,
 
-# &#x20;     "selectedAnswer": "C"
+&#x20;     "selectedAnswer": "C"
 
-# &#x20;   }
+&#x20;   }
 
-# &#x20; ]
+&#x20; ]
 
-# }
+}
 
-# ```
+```
 
-#
 
-# \*\*Expected Output:\*\* Answers should be evaluated and marks calculated.
+**Expected Output:** Answers should be evaluated and marks calculated.
 
-#
 
-# \*\*Actual Output:\*\*
+**Actual Output:**
 
-# \- Total Questions: 3
+- Total Questions: 3
 
-# \- Correct Answers: 3
+- Correct Answers: 3
 
-# \- Marks Obtained: 100
+- Marks Obtained: 100
 
-# \- Total Marks: 100
+- Total Marks: 100
 
-# \- Percentage: 100%
+- Percentage: 100%
 
-# \- Status: Passed
+- Status: Passed
 
-#
 
-# \*\*HTTP Status:\*\* 201 Created (as defined by the backend success response).
+**HTTP Status:** 201 Created (as defined by the backend success response).
 
-#
 
-# \*\*Result:\*\* PASS
+**Result:** PASS
 
-#
 
-# \*Note: The POST success status codes above are based on the backend response implementation. The successful response bodies were observed during testing.\*
+*Note: The POST success status codes above are based on the backend response implementation. The successful response bodies were observed during testing.*
 
-#
 
-# \## 6. Testing Tools
+## 6. Testing Tools
 
-#
 
-# \- Manual Testing
+- Manual Testing
 
-# \- Postman / PowerShell API testing
+- Postman / PowerShell API testing
 
-# \- PostgreSQL queries
+- PostgreSQL queries
 
-# \- Python execution
+- Python execution
 
-# \- Browser-based frontend testing
+- Browser-based frontend testing
 
-#
 
-# \## 7. Test Coverage
+## 7. Test Coverage
 
-#
 
-# The test cases cover the following major areas:
+The test cases cover the following major areas:
 
-#
 
-# \- Student registration and student listing
+- Student registration and student listing
 
-# \- Exam listing
+- Exam listing
 
-# \- Question loading
+- Question loading
 
-# \- Examination submission
+- Examination submission
 
-# \- Result retrieval
+- Result retrieval
 
-# \- Python performance analysis
+- Python performance analysis
 
-# \- API health and HTTP response verification
+- API health and HTTP response verification
 
-#
 
-# \## 8. Overall Test Result
+## 8. Overall Test Result
 
-#
 
-# All seven main test cases listed in this report are recorded with PASS status. Additional API checks also returned successful responses.
+All seven main test cases listed in this report are recorded with PASS status. Additional API checks also returned successful responses.
 
-#
 
 | Total Main Test Cases | Passed | Failed |
 
@@ -283,17 +245,15 @@
 
 | 7 | 7 | 0 |
 
-#
 
-# \*\*Additional API Verification:\*\* 5 GET endpoints returned HTTP 200 successfully. Student registration and examination submission also returned successful response bodies.
+**Additional API Verification:** 5 GET endpoints returned HTTP 200 successfully. Student registration and examination submission also returned successful response bodies.
 
-#
 
-# \## 9. Conclusion
+## 9. Conclusion
 
-#
 
-# The major modules of the Online Examination System were tested. Student registration, student listing, exam listing, question loading, examination submission, result retrieval and Python performance analysis were verified. All seven main test cases recorded in this report passed. The five tested GET API endpoints also returned HTTP 200 responses.
+The major modules of the Online Examination System were tested. Student registration, student listing, exam listing, question loading, examination submission, result retrieval and Python performance analysis were verified. All seven main test cases recorded in this report passed. The five tested GET API endpoints also returned HTTP 200 responses.
+
 
 
 
