@@ -1,17 +1,31 @@
+# Online Examination System
 
-# ONLINE EXAMINATION SYSTEM
+## 1. Project Overview
 
-## Project Overview
-The Online Examination System is a web-based application developed to conduct online examinations, manage students, calculate marks and analyze student performance.
+The Online Examination System is a web-based application developed to conduct online examinations, manage students, maintain questions, evaluate answers, calculate marks, and generate examination results.
 
-## Technologies Used
+## 2. Objectives
 
-1. Java - Backend development
-2. PostgreSQL - Database management
-3. Python - Student performance analysis
-4. HTML, CSS, JavaScript - Frontend development
+- Manage student details.
+- Create and manage examinations.
+- Store and manage questions.
+- Conduct online examinations.
+- Evaluate student answers.
+- Generate examination results.
+- Analyze student performance.
 
-## Main Features
+## 3. Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Java | Backend Development |
+| PostgreSQL | Database Management |
+| HTML | Webpage Structure |
+| CSS | Webpage Design |
+| JavaScript | Frontend Functionality |
+| Python | Student Performance Analysis |
+
+## 4. Main Features
 
 - Student Registration
 - Student Management
@@ -21,45 +35,84 @@ The Online Examination System is a web-based application developed to conduct on
 - Automatic Mark Calculation
 - Result Management
 - Student Performance Analysis
+- Report Generation
 
-## Project Modules
+## 5. Project Modules
 
-### Java
-Handles backend APIs, examination processing and result management.
+### Java – Backend Development
 
-### DBMS
-Stores student details, exams, questions and examination results in PostgreSQL.
+Handles backend APIs, examination processing, and result management.
+
+### DBMS – Database Management
+
+Stores student details, exams, questions, and examination results in PostgreSQL.
 
 ### Foundation of Data Sciences
-Python analyzes examination results and calculates average marks, highest marks, lowest marks and pass percentage.
+
+Python analyzes examination results and calculates:
+- Average Marks
+- Highest Marks
+- Lowest Marks
+- Pass Percentage
 
 ### Software Engineering
-Includes SRS, UML descriptions and software testing documentation.
 
-## How to Run the Project
+Includes software requirements, project planning, design descriptions, and software testing concepts.
 
-### 1. Start PostgreSQL
-Ensure the PostgreSQL service is running.
+## 6. Software Requirements
 
-### 2. Start Java Backend
-Open the backend terminal:
+- Java 21
+- Maven
+- PostgreSQL
+- Python
+- Visual Studio Code
+- Web Browser
 
+## 7. Lines of Code (LOC)
+
+The project contains approximately **2,816 lines of code**, including Java, HTML, CSS, JavaScript, and Python files.
+
+## 8. How to Run the Project
+
+### Step 1: Start PostgreSQL
+
+Ensure that the PostgreSQL service is running.
+
+### Step 2: Start Java Backend
+
+Open the backend terminal and execute:
+
+```bash
 cd backend
-
-Run:
-
 mvn exec:java
+```
 
-### 3. Open Frontend
-Open frontend/index.html using VS Code Live Server.
+### Step 3: Open Frontend
 
-### 4. Run Python Analysis
+Open the frontend terminal and execute:
+
+```bash
+cd frontend
+python -m http.server 5501
+```
+
+Open the following URL in your browser:
+
+`http://127.0.0.1:5501/index.html`
+
+### Step 4: Run Python Analysis
+
 Open a new terminal in the main project folder:
 
+```bash
 python fds/performance_analysis.py
+```
 
-## Database
-Database Name: online_exam_db
+## 9. Database Details
 
-## Project Conclusion
-The Online Examination System integrates Java, DBMS, Python and Software Engineering concepts to provide an examination and student performance management solution.
+- **Database Name:** online_exam_db
+- **Database:** PostgreSQL
+
+## 10. Project Conclusion
+
+The Online Examination System integrates Java, Database Management Systems, Python, and Software Engineering concepts to provide an efficient examination and student performance management solution.
