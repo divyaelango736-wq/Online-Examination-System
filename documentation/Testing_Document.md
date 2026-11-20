@@ -1,4 +1,4 @@
-# \# SOFTWARE TESTING DOCUMENT
+﻿# \# SOFTWARE TESTING DOCUMENT
 
 #
 
@@ -64,27 +64,16 @@
 
 #
 
-# | Test ID | Module | Test Scenario | Expected Result | Actual Result | Status |
-
-# |---|---|---|---|---|---|
-
-# | TC01 | Student Management | Student registration | Student registered successfully | Registration ID 3 created for student 7 and exam 4 | PASS |
-
-# | TC02 | Student Management | View student list | Student details displayed | 7 student records retrieved; HTTP 200 | PASS |
-
-# | TC03 | Exam Management | View exams | Available exam list displayed | 4 exam records retrieved; HTTP 200 | PASS |
-
-# | TC04 | Question Management | Load questions for exam 1 | Exam questions displayed | 5 question records retrieved; HTTP 200 | PASS |
-
-# | TC05 | Examination | Submit examination | Answers submitted and marks calculated | 3 answers evaluated; 3 correct; 100/100; Passed | PASS |
-
-# | TC06 | Result Management | View results | Student examination results displayed | 32 result records retrieved; HTTP 200 | PASS |
-
-# | TC07 | Performance Analysis | Run Python analysis | Performance report generated | Python performance analysis was previously executed successfully | PASS |
-
-#
-
-# \## 5. Detailed API Testing
+| Test ID | Test Name | Module | Expected Result | Actual Result | Status |
+|---|---|---|---|---|---|
+| TC01 | Student Registration | Student Management | Registration successful | Registration ID 3 created for student 7 and exam 4 | PASS |
+| TC02 | View Students | Student Management | Student details displayed | 7 student records retrieved; HTTP 200 | PASS |
+| TC03 | View Exams | Exam Management | Exam list displayed | 4 exam records retrieved; HTTP 200 | PASS |
+| TC04 | Load Questions | Question Management | Exam questions displayed | 5 question records retrieved; HTTP 200 | PASS |
+| TC05 | Submit Exam | Examination | Marks calculated | 3 correct; 100/100; Passed | PASS |
+| TC06 | View Results | Result Management | Results displayed | 32 result records retrieved; HTTP 200 | PASS |
+| TC07 | Performance Analysis | Python | Performance report generated | Python performance analysis executed successfully | PASS |
+## 5. Detailed API Testing
 
 #
 
@@ -96,19 +85,19 @@
 
 #
 
-# | API Endpoint | Expected HTTP Status | Actual HTTP Status | Result |
+| API Endpoint | Expected HTTP Status | Actual HTTP Status | Result |
 
-# |---|---:|---:|---|
+|---|---:|---:|---|
 
-# | `/api/health` | 200 | 200 | PASS |
+| `/api/health` | 200 | 200 | PASS |
 
-# | `/api/students` | 200 | 200 | PASS |
+| `/api/students` | 200 | 200 | PASS |
 
-# | `/api/exams` | 200 | 200 | PASS |
+| `/api/exams` | 200 | 200 | PASS |
 
-# | `/api/questions?examId=1` | 200 | 200 | PASS |
+| `/api/questions?examId=1` | 200 | 200 | PASS |
 
-# | `/api/results` | 200 | 200 | PASS |
+| `/api/results` | 200 | 200 | PASS |
 
 #
 
@@ -288,11 +277,11 @@
 
 #
 
-# | Total Main Test Cases | Passed | Failed |
+| Total Main Test Cases | Passed | Failed |
 
-# |---:|---:|---:|
+|---:|---:|---:|
 
-# | 7 | 7 | 0 |
+| 7 | 7 | 0 |
 
 #
 
@@ -305,3 +294,6 @@
 #
 
 # The major modules of the Online Examination System were tested. Student registration, student listing, exam listing, question loading, examination submission, result retrieval and Python performance analysis were verified. All seven main test cases recorded in this report passed. The five tested GET API endpoints also returned HTTP 200 responses.
+
+
+
